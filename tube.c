@@ -48,5 +48,12 @@ int main(void)
                 printf("Received string: %s", readbuffer);
         }
         
+        childpid = fork();
+        
+        if((childpid = fork()) == -1)
+        {
+            printf("test");
+        }
+        
         return(0);
 }
