@@ -12,7 +12,7 @@
 
 int main(void)
 {
-        int     fd[2], s, p;
+        int     fd[2], nbytes;
         pid_t   childpid;
         char    readbuffer[80];
         
@@ -30,12 +30,14 @@ int main(void)
         if(childpid == 0 )
         {   
                 printf("-- Processus fils 1 (%d) -- \n", getpid());
-                s = (rayon * rayon) * 3.14;
+                float surface = (rayon * rayon) * 3.14;
                 char    string1[] = "surface";
                 close(fd[0]);
                 
-                write(fd[1], string1, strlen(string1)+1);
-                printf("-- fils 1 a ecrit %s \n", string1);
+                printf("-- Fils 1 a fermé le tube en lecture -- \n");
+                nbytes = write(fd[1], &surface, sizeof(surface));
+                printf("-- fils 1 a ecrit %d octets %f \n",nbytes , surface);
+
                 exit(0);
         }
         else
@@ -57,12 +59,12 @@ int main(void)
         if(childpid == 0 )
         {   
                 printf("-- Processus fils 2 (%d) -- \n", getpid());
-                p = 2 * 3.14 * rayon;
+                float perimetre = 2 * 3.14 * rayon;
                 char    string2[] = "", p;
                 close(fd[0]);
                 
-                write(fd[1], string2, strlen(string2)+1);
-                printf("-- fils 2 a ecrit %s \n", string2);
+                write(fd[1], &perimetre, sizeof(perimetre) );
+                printf("-- fils 2 a ecrit %f \n", perimetre);
                 
                 exit(0);
         }
