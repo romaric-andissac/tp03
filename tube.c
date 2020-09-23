@@ -12,47 +12,59 @@
 
 int main(void)
 {
-        int     fd[2], nbytes;
+        int     fd[2], s, p;
         pid_t   childpid;
-        char    string[] = "Hello, world!\n";
         char    readbuffer[80];
+        
+        int rayon = 10; //cm
 
         pipe(fd);
+        childpid = fork();
         
-        if((childpid = fork()) == -1)
+        if(childpid == -1)
         {
                 perror("fork");
                 exit(1);
         }
 
-        if(childpid ==0 )
-        {
-                printf("\t--Processus enfant %d \n");
-                printf("\t--Fermeture de la lecture sur le tube\n");
-                /* Child process closes up input side of pipe */
+        if(childpid == 0 )
+        {   
+                printf("-- Processus fils 1 (%d) -- \n", getpid());
+                s = (rayon * rayon) * 3.14;
+                char    string1[] = "surface";
                 close(fd[0]);
-
-                /* Send "string" through the output side of pipe */
-                write(fd[1], string, (strlen(string)+1));
+                
+                write(fd[1], string1, strlen(string1)+1);
+                printf("-- fils 1 a ecrit %s \n", string1);
                 exit(0);
         }
         else
         {
-                printf("** Processus parent %d \n");
-                printf("** Fermeture de l'ecriture sur le tube\n");  
-                /* Parent process closes up output side of pipe */
+                printf("** Processus pere (%d) ** \n", getpid());
                 close(fd[1]);
-
-                /* Read in a string from the pipe */
-                nbytes = read(fd[0], readbuffer, sizeof(readbuffer));
-                printf("Received string: %s", readbuffer);
+                
         }
         
-        childpid = fork();
+        childpid = fork(); 
         
-        if((childpid = fork()) == -1)
+        if(childpid == -1)
         {
-            printf("test");
+                perror("fork");
+                
+                exit(1);
+        }
+        
+        if(childpid == 0 )
+        {   
+                printf("-- Processus fils 2 (%d) -- \n", getpid());
+                p = 2 * 3.14 * rayon;
+                char    string2[] = "", p;
+                close(fd[0]);
+                
+                write(fd[1], string2, strlen(string2)+1);
+                printf("-- fils 2 a ecrit %s \n", string2);
+                
+                exit(0);
         }
         
         return(0);
